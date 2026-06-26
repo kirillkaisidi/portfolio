@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Kirill Kaisidi — Портфолио | kirillkaisidi.ru</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#ffb800',
+                            goldg: 'rgba(255, 184, 0, 0.4)',
+                            bg: '#030100',
+                            card: 'rgba(255, 255, 255, 0.04)',
+                            border: 'rgba(255, 255, 255, 0.09)',
+                            muted: 'rgba(232, 230, 222, 0.5)',
+                            text: '#e8e6de',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        manrope: ['Manrope', 'sans-serif'],
+                        involve: ['Involve', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        @font-face {
+            font-family: 'Involve';
+            src: url('https://klageportfolio.com/assets/fonts/Involve.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        /* Анимация пульсации бэкграунд-сфер */
+        @keyframes pulse1 {
+            0% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.35; }
+            33% { transform: scale(1.05) translate3d(2vw, 3vw, 0); opacity: 0.5; }
+            66% { transform: scale(0.95) translate3d(-1vw, 1vw, 0); opacity: 0.45; }
+            100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.35; }
+        }
+        @keyframes pulse2 {
+            0% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.4; }
+            33% { transform: scale(1.08) translate3d(-2vw, -3vw, 0); opacity: 0.55; }
+            66% { transform: scale(0.92) translate3d(1vw, -1vw, 0); opacity: 0.35; }
+            100% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.4; }
+        }
+        .sphere-1 { animation: pulse1 15s infinite ease-in-out; }
+        .sphere-2 { animation: pulse2 18s infinite ease-in-out; }
+
+        *, *::before, *::after {
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        /* Плавные ховер-эффекты для карточек работ */
+        .wcard { transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .wcard:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 184, 0, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Кастомный скроллбар внутри модального окна */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.01);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 184, 0, 0.2);
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 184, 0, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-text font-sans overflow-x-hidden relative selection:bg-brand-gold selection:text-black">
+
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#020100]">
+        <div class="sphere-1 absolute w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] rounded-full top-[-15vw] left-[-15vw] bg-radial-gradient from-[rgba(255,160,0,0.14)] to-transparent opacity-50 blur-[80px]" style="background: radial-gradient(circle, rgba(255,160,0,0.14) 0%, rgba(255,160,0,0) 70%);"></div>
+        <div class="sphere-2 absolute w-[70vw] h-[70vw] md:w-[40vw] md:h-[40vw] rounded-full bottom-[-15vw] right-[-15vw] bg-radial-gradient from-[rgba(255,100,0,0.11)] to-transparent opacity-40 blur-[80px]" style="background: radial-gradient(circle, rgba(255,100,0,0.11) 0%, rgba(255,100,0,0) 70%);"></div>
+    </div>
+
+    <canvas id="noise" class="fixed inset-0 w-full h-full pointer-events-none z-[2] opacity-[0.025] grayscale"></canvas>
+
+    <nav id="nav" class="fixed top-5 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-[900px] h-14 px-6 flex items-center justify-between border border-transparent rounded-full transition-all duration-500 bg-transparent">
+        <a href="#about" class="font-involve font-bold text-[10px] tracking-[0.3em] md:tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white to-[#777777] pr-1 select-none uppercase flex-shrink-0">
+            KIRILL KAISIDI
+        </a>
+        
+        <div class="hidden md:flex items-center gap-1 bg-black/25 backdrop-blur-md px-1 py-1 rounded-full border border-white/5">
+            <a href="#about" class="nl text-[11px] font-medium text-white/40 hover:text-white px-3.5 py-1.5 rounded-full transition-all duration-300" data-s="about">Обо мне</a>
+            <a href="#skills-experience" class="nl text-[11px] font-medium text-white/40 hover:text-white px-3.5 py-1.5 rounded-full transition-all duration-300" data-s="skills-experience">Навыки | Опыт</a>
+            <a href="#creative" class="nl text-[11px] font-medium text-white/40 hover:text-white px-3.5 py-1.5 rounded-full transition-all duration-300" data-s="creative">Работы</a>
+            <a href="#faq" class="nl text-[11px] font-medium text-white/40 hover:text-white px-3.5 py-1.5 rounded-full transition-all duration-300" data-s="faq">FAQ</a>
+        </div>
+
+        <div class="flex items-center gap-3 flex-shrink-0">
+            <a href="https://t.me/kirillkaisidi" target="_blank" class="px-5 py-2 h-9 rounded-full bg-brand-gold hover:shadow-[0_0_15px_rgba(255,184,0,0.3)] hover:scale-105 text-black font-bold text-[11px] tracking-wider transition-all duration-300 flex items-center justify-center whitespace-nowrap">
+                Связаться
+            </a>
+        </div>
+    </nav>
+
+    <main class="relative z-10">
+        
+        <section id="about" class="pt-28 pb-10 px-6 md:px-10 max-w-[960px] mx-auto min-h-[70vh] flex items-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center w-full">
+                <div class="relative w-full aspect-[4/5] md:h-[480px] rounded-[14px] overflow-hidden border border-brand-border group">
+                    <img id="my-photo-1" src="photo2.png" alt="Кирилл — Лицевое фото" class="absolute inset-0 w-full h-full object-cover object-center transition-all duration-500 opacity-100 z-10">
+                    <img id="my-photo-2" src="photo1.png" alt="Кирилл — Второе фото" class="absolute inset-0 w-full h-full object-cover object-center transition-all duration-500 opacity-0 z-0">
+                    
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                        <button onclick="switchPhoto(1)" id="dot-1" class="w-1.5 h-1.5 rounded-full bg-brand-gold transition-all duration-300" aria-label="Слайд 1"></button>
+                        <button onclick="switchPhoto(2)" id="dot-2" class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300" aria-label="Слайд 2"></button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-[9px] tracking-[0.25em] uppercase text-brand-gold font-bold mb-3">Обо мне</span>
+                    <h1 class="font-involve text-2xl md:text-3xl font-bold text-white mb-5 leading-tight">Кирилл | 28 лет<br>Режиссёр монтажа</h1>
+                    
+                    <div class="space-y-4 text-xs md:text-sm text-brand-text/80 leading-relaxed font-light mb-6">
+                        <p>Рассматриваю монтаж как инструмент мышления.</p>
+                        <p>Можно иметь сильную идею или важное сообщение, но когда форма проще своего содержания, заключённая в ней информация не достигает своей цели.</p>
+                        <p>Я работаю с тем, как зритель воспринимает историю: от структуры и смысла до ритма и внимания.</p>
+                        <p class="text-white font-medium bg-white/[0.03] px-3.5 py-2.5 rounded-lg border-l-2 border-brand-gold">Понять, что убрать, зачастую важнее, чем решить, что добавить.</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
+                        <a href="https://t.me/kirillkaisidi" target="_blank" class="flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-brand-gold hover:shadow-[0_0_15px_rgba(255,184,0,0.25)] hover:scale-105 text-black font-bold text-[11px] tracking-wider transition-all duration-300 whitespace-nowrap">
+                            Обсудить проект
+                        </a>
+                        <button type="button" class="open-brief-modal flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-white/[0.04] border border-brand-border hover:bg-white/[0.08] text-white font-semibold text-[11px] tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer">
+                            Заполнить Бриф
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills-experience" class="pb-20 px-6 md:px-10 max-w-[960px] mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div class="bg-white/[0.02] border border-brand-border rounded-[14px] p-6 md:p-8 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-involve text-base md:text-lg font-bold text-white mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-gold"></span> Навыки
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <span class="text-brand-gold font-bold uppercase tracking-wider text-[9px] block mb-3">Инструменты</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">Adobe Premier Pro</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">After Effects</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">Photoshop</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">Topaz Video</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">AI</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">Figma</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-brand-gold font-bold uppercase tracking-wider text-[9px] block mb-3">Профильные</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">сторителлинг</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">ритм</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">драматургия</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">саунд-дизайн</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">цветокоррекция</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">дизайн</span>
+                                    <span class="text-[10px] font-semibold text-brand-text/90 px-3 py-1.5 bg-white/[0.03] border border-brand-border rounded-full hover:border-brand-gold hover:text-brand-gold transition-all duration-300">моушен-дизайн</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/[0.02] border border-brand-border rounded-[14px] p-6 md:p-8 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-involve text-base md:text-lg font-bold text-white mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-gold"></span> Опыт
+                        </h3>
+                        <div class="space-y-5">
+                            <div>
+                                <span class="text-brand-gold font-bold uppercase tracking-wider text-[9px] block mb-2">Образование: 2017 - 2021</span>
+                                <p class="text-xs md:text-sm text-white font-medium">ВШЭ (Школа дизайна)</p>
+                                <p class="text-[10px] md:text-xs text-brand-text/60 font-light mt-1">Направления: Дизайн, Сторителлинг</p>
+                            </div>
+                            <div class="pt-4 border-t border-white/5 space-y-3">
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-brand-gold font-bold text-xs md:text-sm whitespace-nowrap">8 лет +</span>
+                                    <span class="text-xs md:text-sm text-brand-text/80 font-light">в монтаже и визуальном сторителлинге</span>
+                                </div>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-brand-gold font-bold text-xs md:text-sm whitespace-nowrap">6 лет +</span>
+                                    <span class="text-xs md:text-sm text-brand-text/80 font-light">в коммерческом монтаже</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="creative" class="py-20 px-6 md:px-10 max-w-[960px] mx-auto">
+            <div class="mb-10">
+                <span class="text-[9px] tracking-[0.25em] uppercase text-brand-gold font-bold">Портфолио</span>
+                <h2 class="font-involve text-2xl md:text-4xl font-bold tracking-tight text-white mt-1">Творческие работы</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/9MKNcGrCErXaFDu2FfXcmh', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/9MKNcGrCErXaFDu2FfXcmh" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/cfc4dbRLqJDu2RLDdmRKZU', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/cfc4dbRLqJDu2RLDdmRKZU" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/2PwvV89p44ybKPL2x9SB9o', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/2PwvV89p44ybKPL2x9SB9o" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/vZXi48B5hMkbgsHcszAJ61', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/vZXi48B5hMkbgsHcszAJ61" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] md:aspect-auto md:h-[380px] md:col-span-2 cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/aeCWMmBU2w2bBM3Z7U1jJC', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/aeCWMmBU2w2bBM3Z7U1jJC" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vertical" class="py-12 px-6 md:px-10 max-w-[960px] mx-auto">
+            <div class="mb-10">
+                <span class="text-[9px] tracking-[0.25em] uppercase text-brand-gold font-bold">Портфолио</span>
+                <h2 class="font-involve text-2xl md:text-4xl font-bold tracking-tight text-white mt-1">Вертикальные работы</h2>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 sm:gap-4 md:gap-5">
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[9/16] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/0X3Lg3LK1FQBtTfFZWiAF1', true)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/0X3Lg3LK1FQBtTfFZWiAF1" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[9/16] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/coXpfaeeiA5ckFfcVem3zb', true)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/coXpfaeeiA5ckFfcVem3zb" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[9/16] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/xhxMYdaVPR2A5vhgEZzUeQ', true)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/xhxMYdaVPR2A5vhgEZzUeQ" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[9/16] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/sZVFXtxKkgp6MCpBtTmEoY', true)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/sZVFXtxKkgp6MCpBtTmEoY" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="horizontal" class="py-12 px-6 md:px-10 max-w-[960px] mx-auto">
+            <div class="mb-10">
+                <span class="text-[9px] tracking-[0.25em] uppercase text-brand-gold font-bold">Портфолио</span>
+                <h2 class="font-involve text-2xl md:text-4xl font-bold tracking-tight text-white mt-1">Горизонтальные работы</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/gD37sMvsMo3p1whpXqf77u', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/gD37sMvsMo3p1whpXqf77u" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/eULJ7jkgkpLMk7S2YYyDYs', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/eULJ7jkgkpLMk7S2YYyDYs" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/obCcZecr2Q1hUqpuZaSgzy', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/obCcZecr2Q1hUqpuZaSgzy" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/3A8igEPquj6YBHndXsbMTC', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/3A8igEPquj6YBHndXsbMTC" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+                <div class="wcard group relative rounded-[14px] overflow-hidden bg-brand-card border border-brand-border aspect-[16/9] md:aspect-auto md:h-[380px] md:col-span-2 cursor-pointer" onclick="openVideoModal('https://kinescope.io/embed/rAw5zevMyj6q5h17ZtLnan', false)">
+                    <div class="absolute inset-0 w-full h-full pointer-events-none">
+                        <iframe src="https://kinescope.io/embed/rAw5zevMyj6q5h17ZtLnan" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div class="absolute inset-0 bg-transparent transition-all duration-300 group-hover:bg-black/10 z-10"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="h-[1px] bg-gradient-to-r from-transparent via-brand-border to-transparent mt-12"></div>
+
+        <section id="faq" class="py-20 px-6 md:px-10 max-w-[960px] mx-auto">
+            <div class="mb-10">
+                <span class="text-[9px] tracking-[0.25em] uppercase text-brand-gold font-bold">FAQ</span>
+                <h2 class="font-involve text-2xl md:text-4xl font-bold tracking-tight text-white mt-1">Частые вопросы</h2>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="border border-brand-border rounded-xl overflow-hidden transition-all duration-300 hover:border-brand-gold/30">
+                    <button class="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-all duration-300" onclick="toggleFAQ(this)">
+                        <span class="text-xs md:text-sm font-medium">Какая стоимость за video?</span>
+                        <span class="faq-icon text-lg text-brand-muted font-light transition-transform duration-300">+</span>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="p-5 text-xs md:text-sm text-brand-muted leading-relaxed border-t border-brand-border/40">
+                            Стоимость для каждого проекта индивидуальна и зависит от сложности и объема работы. Напишите мне детали задачи, и я сориентирую вас более точно.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="border border-brand-border rounded-xl overflow-hidden transition-all duration-300 hover:border-brand-gold/30">
+                    <button class="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-all duration-300" onclick="toggleFAQ(this)">
+                        <span class="text-xs md:text-sm font-medium">Как происходит процесс оплаты?</span>
+                        <span class="faq-icon text-lg text-brand-muted font-light transition-transform duration-300">+</span>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="p-5 text-xs md:text-sm text-brand-muted leading-relaxed border-t border-brand-border/40">
+                            Работаю по предоплате 50% перед началом монтажа. Оставшиеся 50% после утверждения финала.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="border border-brand-border rounded-xl overflow-hidden transition-all duration-300 hover:border-brand-gold/30">
+                    <button class="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-all duration-300" onclick="toggleFAQ(this)">
+                        <span class="text-xs md:text-sm font-medium">Какие сроки выполнения работы?</span>
+                        <span class="faq-icon text-lg text-brand-muted font-light transition-transform duration-300">+</span>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="p-5 text-xs md:text-sm text-brand-muted leading-relaxed border-t border-brand-border/40">
+                            Обычно монтаж занимает от 1 до 5 дней, в зависимости от объема исходных материалов и сложности графики. Мы всегда фиксируем дедлайн до начала работы.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="border border-brand-border rounded-xl overflow-hidden transition-all duration-300 hover:border-brand-gold/30">
+                    <button class="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-all duration-300" onclick="toggleFAQ(this)">
+                        <span class="text-xs md:text-sm font-medium">Сколько правок доступно?</span>
+                        <span class="faq-icon text-lg text-brand-muted font-light transition-transform duration-300">+</span>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <p class="p-5 text-xs md:text-sm text-brand-muted leading-relaxed border-t border-brand-border/40">
+                            В стоимость входят 2 круга бесплатных правок, без смены идеи или концепции, последующие правки оплачиваются отдельно.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 px-6 md:px-10 max-w-[960px] mx-auto">
+            <div class="relative rounded-[20px] overflow-hidden bg-white/[0.02] border border-brand-border p-10 md:p-14 text-center">
+                <div class="absolute -top-[100px] -left-[100px] w-[250px] h-[250px] rounded-full bg-brand-gold/5 blur-[80px] pointer-events-none"></div>
+                
+                <h2 class="font-involve text-base md:text-xl font-bold tracking-tight text-white mt-4 max-w-[620px] mx-auto leading-tight">
+                    Монтаж - это поиск формы, которая позволяет содержанию быть услышанным
+                </h2>
+                <p class="text-xs md:text-sm text-brand-muted max-w-[420px] mx-auto mt-4 font-light">
+                    Есть задача или проект? Напишите мне. Обсудим детали и формат сотрудничества.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center mt-8 w-full sm:w-auto px-4 flex-wrap">
+                    <a href="https://t.me/kirillkaisidi" target="_blank" class="flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-brand-gold hover:shadow-[0_0_15px_rgba(255,184,0,0.25)] hover:scale-105 text-black font-bold text-xs tracking-wider transition-all duration-300 whitespace-nowrap">
+                        Написать Telegram
+                    </a>
+                    <button type="button" class="open-brief-modal flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-white/[0.04] border border-brand-border hover:bg-white/[0.08] text-white font-semibold text-xs tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer">
+                        Заполнить Бриф
+                    </button>
+                    <a href="https://instagram.com/ваш_ник" target="_blank" class="flex items-center justify-center gap-1.5 px-5 py-3 rounded-full bg-white/[0.04] border border-brand-border hover:bg-white/[0.08] text-white font-semibold text-xs tracking-wider transition-all duration-300 whitespace-nowrap">
+                        Instagram
+                    </a>
+                </div>
+
+                <div class="mt-6 flex flex-col items-center">
+                    <button onclick="copyToClipboard('kirillkaisidi.editor@mail.ru')" class="text-xs text-brand-muted hover:text-brand-gold transition-colors duration-300 flex items-center gap-2 cursor-pointer bg-transparent border-none outline-none group">
+                        <svg class="w-3.5 h-3.5 fill-current text-white/40 group-hover:text-brand-gold transition-colors" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <span class="underline underline-offset-4 decoration-white/10 group-hover:decoration-brand-gold/50">kirillkaisidi.editor@mail.ru</span>
+                        <span class="text-[9px] uppercase tracking-wider bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-white/40 group-hover:text-white/80 transition-all">Скопировать</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <footer class="border-t border-brand-border py-8 relative overflow-hidden bg-[#020100]/60 backdrop-blur-md">
+            <div class="max-w-[960px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span class="text-[10px] text-white/40 tracking-widest font-involve select-none uppercase">KIRILL KAISIDI</span>
+                <p class="text-[9px] tracking-widest text-white/30 uppercase font-medium">
+                    © 2026 Kirill Kaisidi. Все права защищены
+                </p>
+            </div>
+        </footer>
+    </main>
+
+    <div id="briefModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 ease-in-out p-4">
+        <div id="briefContainer" class="bg-brand-bg border border-brand-border rounded-[20px] max-w-xl w-full p-6 md:p-8 relative shadow-[0_0_50px_rgba(255,184,0,0.1)] transform scale-95 transition-all duration-300 ease-in-out max-h-[90vh] overflow-y-auto custom-scroll">
+            
+            <button id="closeBriefBtn" type="button" class="absolute top-5 right-5 text-brand-text/50 hover:text-brand-gold text-2xl transition-all duration-200 cursor-pointer outline-none select-none">&times;</button>
+            
+            <div class="mb-6">
+                <span class="text-[9px] tracking-[0.25em] uppercase text-brand-gold font-bold block mb-1">Бриф на монтаж</span>
+                <h3 class="font-involve text-xl md:text-2xl font-bold tracking-tight text-white">Давайте обсудим проект</h3>
+                <p class="text-[11px] text-brand-text/60 font-light mt-1">Ответьте на вопросы, чтобы я мог рассчитать точную цену</p>
+            </div>
+
+            <form id="tgBriefForm" class="space-y-5 text-xs font-light">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">Как вас зовут?</label>
+                        <input type="text" id="bfName" placeholder="Ваше имя" required class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">Telegram или Телефон</label>
+                        <input type="text" id="bfContact" placeholder="@username / +7 925 000 0000" required class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">1. Формат</label>
+                    <select id="bfFormat" class="w-full bg-[#0a0604] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors appearance-none cursor-pointer">
+                        <option>Вертикальный (Reels / Shorts / TikTok)</option>
+                        <option>Горизонтальный (YouTube ролик)</option>
+                        <option>Другой / Нужна адаптация под форматы</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">2. Хронометраж готового ролика?</label>
+                    <input type="text" id="bfDuration" placeholder="Например: 1 минута / 15 минут" class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">3. Общий хронометраж сырого материла?</label>
+                    <input type="text" id="bfRawDuration" placeholder="Например: 15 минут / 2 часа съёмки" class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">4. Есть ли ТЗ, сценарий, план или таймкоды?</label>
+                    <select id="bfScript" class="w-full bg-[#0a0604] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors appearance-none cursor-pointer">
+                        <option>Да, есть чёткий сценарий / таймкоды лучших дублей</option>
+                        <option>Есть примерный план, нужно собирать логику монтажёру</option>
+                        <option>Сценария нет, полная импровизация</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">5. Какой формат исходников?</label>
+                        <select id="bfResolution" class="w-full bg-[#0a0604] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors appearance-none cursor-pointer">
+                            <option>1080p (Full HD)</option>
+                            <option>4K</option>
+                            <option>Не знаю / Снято на телефон</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">6. Сколько камер использовалось?</label>
+                        <input type="text" id="bfCameras" placeholder="Например: 1 камера / 2 камеры" class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">7. Цель видео? (жанр)</label>
+                    <input type="text" id="bfGoal" placeholder="Например: развлекательный, экспертный, реклама, лекция, влог" class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">8. Ссылки на референсы (монтаж, который нравится)</label>
+                    <input type="text" id="bfRefs" placeholder="Ссылки на YouTube или облако" class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                </div>
+
+                <div>
+                    <label class="text-[9px] uppercase tracking-wider text-brand-gold font-bold mb-1.5 block">9. Какие сроки на выполнение?</label>
+                    <input type="text" id="bfDeadline" placeholder="Например: сделать до пятницы / не горит" class="w-full bg-white/[0.02] border border-brand-border focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/20 outline-none rounded-xl px-4 py-3 text-brand-text transition-colors">
+                </div>
+
+                <button type="submit" id="submitBriefBtn" class="w-full bg-brand-gold hover:shadow-[0_0_20px_rgba(255,184,0,0.3)] hover:scale-[1.01] text-black font-bold text-xs tracking-wider py-3.5 px-6 rounded-full transition-all duration-300 cursor-pointer mt-2 outline-none select-none">
+                    Отправить бриф
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <div id="videoLightboxModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-150 ease-out p-3 sm:p-6">
+        <button onclick="closeVideoModal()" type="button" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/50 hover:text-brand-gold text-4xl font-light transition-all duration-150 cursor-pointer outline-none select-none z-50">&times;</button>
+        
+        <div id="videoLightboxContainer" class="relative w-full max-w-7xl aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(255,184,0,0.3)] transform scale-95 translate-y-3 opacity-0 transition-all duration-150 ease-out">
+            <iframe id="videoLightboxIframe" src="" style="border:0;position:absolute;top:0;left:0;height:100%;width:100%;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;" allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-500 max-w-sm w-full px-5 py-4 rounded-xl border flex items-center gap-3 backdrop-blur-xl bg-brand-bg/95">
+        <div id="toastIcon" class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold"></div>
+        <div>
+            <h4 id="toastTitle" class="text-xs font-bold text-white uppercase tracking-wider">Уведомление</h4>
+            <p id="toastMessage" class="text-[11px] text-brand-text/80 font-light mt-0.5"></p>
+        </div>
+    </div>
+
+    <script>
+        // Сверхбыстрое управление всплывающим видео-окном (Lightbox) с поддержкой Apple TV-style плавности и ускоренных переходов
+        function openVideoModal(embedUrl, isVertical) {
+            const modal = document.getElementById('videoLightboxModal');
+            const container = document.getElementById('videoLightboxContainer');
+            const iframe = document.getElementById('videoLightboxIframe');
+            
+            // 1. Сбрасываем iframe, чтобы ничего не загружалось в фоне до анимации
+            iframe.src = '';
+            
+            // 2. Динамически переключаем размеры контейнера: теперь они крупные и идеально адаптированы
+            if (isVertical) {
+                // Премиальный размер для вертикальных видео на 85% высоты экрана
+                container.className = 'relative h-[85vh] max-h-[85vh] aspect-[9/16] w-auto bg-black rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(255,184,0,0.35)] transform scale-95 translate-y-3 opacity-0 transition-all duration-150 ease-out z-40';
+            } else {
+                // Огромный кинотеатральный формат (max-w-7xl)
+                container.className = 'relative w-[92vw] max-w-[7xl] aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(255,184,0,0.35)] transform scale-95 translate-y-3 opacity-0 transition-all duration-150 ease-out z-40';
+            }
+            
+            // 3. Мягко проявляем саму модалку (ускоренные переходы — 150мс)
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100', 'pointer-events-auto');
+            
+            // 4. Плавное масштабирование и подъем окна
+            setTimeout(() => {
+                container.classList.remove('scale-95', 'translate-y-3', 'opacity-0');
+                container.classList.add('scale-100', 'translate-y-0', 'opacity-100');
+            }, 10);
+            
+            // 5. ВАЖНЕЙШИЙ ХАК ДЛЯ ВЫСОКОГО КАЧЕСТВА:
+            // Загружаем iframe ТОЛЬКО тогда, когда модальное окно полностью открылось (160мс).
+            // В этот момент ширина iframe уже стабильна и максимальна в DOM, поэтому
+            // Kinescope сразу подгружает видео в максимальном качестве.
+            setTimeout(() => {
+                // Добавляем autoplay=1 для моментального старта
+                iframe.src = embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+            }, 160);
+            
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoLightboxModal');
+            const container = document.getElementById('videoLightboxContainer');
+            const iframe = document.getElementById('videoLightboxIframe');
+            
+            // Плавное затухание и съезд контейнера вниз (150мс)
+            container.classList.add('scale-95', 'translate-y-3', 'opacity-0');
+            container.classList.remove('scale-100', 'translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                modal.classList.remove('opacity-100', 'pointer-events-auto');
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                // Сбрасываем iframe, чтобы звук гарантированно выключился
+                iframe.src = '';
+            }, 150);
+            
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Клик по темному фону также мгновенно закрывает видео-лайтбокс
+        document.getElementById('videoLightboxModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideoModal();
+            }
+        });
+
+        // Слайдер фотографий автора
+        function switchPhoto(index) {
+            const p1 = document.getElementById('my-photo-1');
+            const p2 = document.getElementById('my-photo-2');
+            const d1 = document.getElementById('dot-1');
+            const d2 = document.getElementById('dot-2');
+            
+            if (!p1 || !p2 || !d1 || !d2) return;
+            
+            if (index === 1) {
+                p1.style.opacity = '1';
+                p1.style.zIndex = '10';
+                p2.style.opacity = '0';
+                p2.style.zIndex = '0';
+                
+                d1.className = 'w-1.5 h-1.5 rounded-full bg-brand-gold transition-all duration-300';
+                d2.className = 'w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300';
+            } else {
+                p1.style.opacity = '0';
+                p1.style.zIndex = '0';
+                p2.style.opacity = '1';
+                p2.style.zIndex = '10';
+                
+                d1.className = 'w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300';
+                d2.className = 'w-1.5 h-1.5 rounded-full bg-brand-gold transition-all duration-300';
+            }
+        }
+
+        // Кинематографичный шум на холсте
+        (function () {
+            const canvas = document.getElementById('noise');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d', { alpha: true });
+            const noiseWidth = 128, noiseHeight = 128;
+            
+            const cacheCanvas = document.createElement('canvas');
+            cacheCanvas.width = noiseWidth;
+            cacheCanvas.height = noiseHeight;
+            const cacheCtx = cacheCanvas.getContext('2d', { alpha: false });
+            
+            let w, h, resizeTimer;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resize, 150);
+            }, { passive: true });
+            
+            let lastTime = 0;
+            let running = true;
+            const fpsInterval = 1000 / 15; 
+            
+            document.addEventListener('visibilitychange', () => {
+                running = !document.hidden;
+                if (running) {
+                    lastTime = 0;
+                    requestAnimationFrame(tick);
+                }
+            });
+            
+            function tick(now) {
+                if (!running) return;
+                requestAnimationFrame(tick);
+                const elapsed = now - lastTime;
+                if (elapsed > fpsInterval) {
+                    lastTime = now - (elapsed % fpsInterval);
+                    const imgData = cacheCtx.createImageData(noiseWidth, noiseHeight);
+                    const buffer = new Uint32Array(imgData.data.buffer);
+                    
+                    for (let i = 0, len = buffer.length; i < len; i++) {
+                        buffer[i] = Math.random() > 0.5 ? 0xFFFFFFFF : 0xFF000000;
+                    }
+                    
+                    cacheCtx.putImageData(imgData, 0, 0);
+                    ctx.clearRect(0, 0, w, h);
+                    ctx.fillStyle = ctx.createPattern(cacheCanvas, 'repeat');
+                    ctx.fillRect(0, 0, w, h);
+                }
+            }
+            requestAnimationFrame(tick);
+        })();
+
+        // Логика выпадающих списков FAQ
+        function toggleFAQ(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.faq-icon');
+            const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+            document.querySelectorAll('.faq-content').forEach(el => {
+                el.style.maxHeight = '0px';
+                el.previousElementSibling.querySelector('.faq-icon').classList.remove('rotate-45', 'text-brand-gold');
+            });
+
+            if (!isOpen) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.classList.add('rotate-45', 'text-brand-gold');
+            }
+        }
+
+        // Сжатие меню при скролле
+        const nav = document.getElementById('nav');
+        let isScrolled = false;
+        window.addEventListener('scroll', () => {
+            const shouldBeScrolled = window.scrollY > 40;
+            if (shouldBeScrolled !== isScrolled) {
+                if (shouldBeScrolled) {
+                    nav.classList.add('sc', 'max-w-[620px]', 'h-12', 'bg-black/45', 'backdrop-blur-xl', 'border-white/10', 'shadow-[0_4px_40px_rgba(0,0,0,0.5)]');
+                    nav.classList.remove('max-w-[900px]', 'h-14', 'border-transparent');
+                } else {
+                    nav.classList.remove('sc', 'max-w-[620px]', 'h-12', 'bg-black/45', 'backdrop-blur-xl', 'border-white/10', 'shadow-[0_4px_40px_rgba(0,0,0,0.5)]');
+                    nav.classList.add('max-w-[900px]', 'h-14', 'border-transparent');
+                }
+                isScrolled = shouldBeScrolled;
+            }
+        }, { passive: true });
+
+        // Подсветка активных пунктов меню
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const currentId = entry.target.id;
+                    document.querySelectorAll('.nl').forEach(a => {
+                        let isMatch = a.dataset.s === currentId;
+                        
+                        if (a.dataset.s === 'creative' && (currentId === 'creative' || currentId === 'vertical' || currentId === 'horizontal')) {
+                            isMatch = true;
+                        }
+                        
+                        a.classList.toggle('text-white', isMatch);
+                        a.classList.toggle('text-white/40', !isMatch);
+                    });
+                }
+            });
+        }, { threshold: 0.15 });
+
+        ['about', 'skills-experience', 'creative', 'vertical', 'horizontal', 'faq'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) sectionObserver.observe(el);
+        });
+
+        // Константы Telegram
+        const TG_CHAT_ID = '5182411567';
+        const TG_BOT_TOKEN = '8846717425:AAHRsF4A6BbPM3E0JjPfvEm_8v12Iot0o6M';
+
+        // Буфер обмена (Email)
+        function copyToClipboard(text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast('УСПЕШНО СКОПИРОВАНО', 'Email-адрес kirillkaisidi.editor@mail.ru скопирован в буфер обмена!', true);
+        }
+
+        // Управление модальным окном брифа
+        const briefModal = document.getElementById('briefModal');
+        const briefContainer = document.getElementById('briefContainer');
+        const closeBriefBtn = document.getElementById('closeBriefBtn');
+        const openBriefBtns = document.querySelectorAll('.open-brief-modal');
+        const tgBriefForm = document.getElementById('tgBriefForm');
+
+        openBriefBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                briefModal.classList.remove('opacity-0', 'pointer-events-none');
+                briefModal.classList.add('opacity-100', 'pointer-events-auto');
+                briefContainer.classList.remove('scale-95');
+                briefContainer.classList.add('scale-100');
+                document.body.classList.add('overflow-hidden');
+            });
+        });
+
+        function closeBriefModal() {
+            briefModal.classList.remove('opacity-100', 'pointer-events-auto');
+            briefModal.classList.add('opacity-0', 'pointer-events-none');
+            briefContainer.classList.remove('scale-100');
+            briefContainer.classList.add('scale-95');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        closeBriefBtn.addEventListener('click', closeBriefModal);
+        briefModal.addEventListener('click', (e) => {
+            if (e.target === briefModal) {
+                closeBriefModal();
+            }
+        });
+
+        // Показ всплывающего уведомления
+        function showToast(title, message, isSuccess = true) {
+            const toast = document.getElementById('toastNotification');
+            const tIcon = document.getElementById('toastIcon');
+            const tTitle = document.getElementById('toastTitle');
+            const tMessage = document.getElementById('toastMessage');
+
+            tTitle.textContent = title;
+            tMessage.textContent = message;
+
+            if (isSuccess) {
+                toast.classList.remove('border-red-500/30', 'shadow-[0_0_20px_rgba(239,68,68,0.1)]');
+                toast.classList.add('border-brand-gold/30', 'shadow-[0_0_20px_rgba(255,184,0,0.1)]');
+                tIcon.innerHTML = '✓';
+                tIcon.className = 'w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold bg-brand-gold text-black';
+            } else {
+                toast.classList.remove('border-brand-gold/30', 'shadow-[0_0_20px_rgba(255,184,0,0.1)]');
+                toast.classList.add('border-red-500/30', 'shadow-[0_0_20px_rgba(239,68,68,0.1)]');
+                tIcon.innerHTML = '!';
+                tIcon.className = 'w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold bg-red-500 text-white';
+            }
+
+            toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+            }, 4500);
+        }
+
+        // Отправка формы брифа в Telegram
+        tgBriefForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBriefBtn');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка данных...';
+
+            const clientName = document.getElementById('bfName').value.trim();
+            const clientContact = document.getElementById('bfContact').value.trim();
+            const projectFormat = document.getElementById('bfFormat').value;
+            const projectDuration = document.getElementById('bfDuration').value.trim() || 'Не указано';
+            const rawDuration = document.getElementById('bfRawDuration').value.trim() || 'Не указано';
+            const hasScript = document.getElementById('bfScript').value;
+            const footageResolution = document.getElementById('bfResolution').value;
+            const camerasCount = document.getElementById('bfCameras').value.trim() || 'Не указано';
+            const projectGoal = document.getElementById('bfGoal').value.trim() || 'Не указано';
+            const projectRefs = document.getElementById('bfRefs').value.trim() || 'Не указано';
+            const projectDeadline = document.getElementById('bfDeadline').value.trim() || 'Не указано';
+
+            const messageText = `📋 <b>НОВЫЙ БРИФ НА МОНТАЖ!</b>\n\n` +
+                                `👤 <b>Клиент:</b> ${clientName}\n` +
+                                `📱 <b>Контакты:</b> ${clientContact}\n\n` +
+                                `1️⃣ <b>Формат:</b> ${projectFormat}\n` +
+                                `2️⃣ <b>Хронометраж финала:</b> ${projectDuration}\n` +
+                                `3️⃣ <b>Объем исходников:</b> ${rawDuration}\n` +
+                                `4️⃣ <b>Сценарий / ТЗ:</b> ${hasScript}\n` +
+                                `5️⃣ <b>Качество:</b> ${footageResolution}\n` +
+                                `6️⃣ <b>Камеры:</b> ${camerasCount}\n` +
+                                `7️⃣ <b>Цель ролика:</b> ${projectGoal}\n` +
+                                `8️⃣ <b>Референсы:</b> ${projectRefs}\n` +
+                                `9️⃣ <b>Сроки:</b> ${projectDeadline}`;
+
+            const telegramApiUrl = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+
+            try {
+                const response = await fetch(telegramApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TG_CHAT_ID,
+                        text: messageText,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('УСПЕШНО ОТПРАВЛЕНО', 'Бриф доставлен Кириллу. Ожидайте ответа в Telegram в ближайшее время!', true);
+                    tgBriefForm.reset();
+                    closeBriefModal();
+                } else {
+                    showToast('ОШИБКА ОТПРАВКИ', 'Что-то пошло не так. Пожалуйста, напишите мне напрямую в Telegram!', false);
+                }
+            } catch (error) {
+                showToast('СБОЙ СЕТИ', 'Не удалось соединиться с сервером. Проверьте интернет-подключение.', false);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+    </script>
+</body>
+</html>
